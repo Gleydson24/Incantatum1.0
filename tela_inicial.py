@@ -14,7 +14,7 @@ BUTTON_COLOR = (70, 70, 70)
 
 # --- Inicializa o Pygame ---
 pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption(SCREEN_TITLE)
 
 # --- Carrega a Imagem de Fundo ---
@@ -29,8 +29,8 @@ except pygame.error as e:
 
 
 # --- Configurações do Botão ---
-button_width = 200
-button_height = 60
+button_width = 250
+button_height = 65
 button_x = (SCREEN_WIDTH - button_width) // 2
 button_y = SCREEN_HEIGHT - 100
 button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
