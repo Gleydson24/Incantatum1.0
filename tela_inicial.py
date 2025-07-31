@@ -3,8 +3,8 @@ import sys
 import math
 
 # --- Configurações Iniciais ---
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1366
+SCREEN_HEIGHT = 768
 SCREEN_TITLE = "Encantatun - Luta de Varinhas"
 
 # Cores
