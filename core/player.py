@@ -5,12 +5,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLAYER_DIR = os.path.join(BASE_DIR, "assets", "player")
 
 class Player:
-    def __init__(self, x, y, floor_rect):
+    def __init__(self, x, y, floor_rect, screen_height=None):
         self.speed = 1.7
         self.floor_rect = floor_rect
 
+        if screen_height:
+            scale_factor = screen_height / 768
+        else:
+            scale_factor = 1
+
         def scale(img):
-            return pygame.transform.scale(img, (128, 128))
+            width = int(128 * scale_factor)
+            height = int(128 * scale_factor)
+            return pygame.transform.scale(img, (width, height))
 
         self.idle_frames = [
             scale(pygame.image.load(os.path.join(PLAYER_DIR, "idle1.png")).convert_alpha()),
@@ -56,6 +63,7 @@ class Player:
             dy = self.speed
 
         new_rect = self.rect.move(dx, dy)
+
         new_rect.bottom = self.floor_rect.top
 
         if new_rect.left < self.floor_rect.left:
