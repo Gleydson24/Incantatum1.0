@@ -12,7 +12,6 @@ class Player:
         def scale(img):
             return pygame.transform.scale(img, (128, 128))
 
-        # Carregar sprites
         self.idle_frames = [
             scale(pygame.image.load(os.path.join(PLAYER_DIR, "idle1.png")).convert_alpha()),
             scale(pygame.image.load(os.path.join(PLAYER_DIR, "idle2.png")).convert_alpha()),
@@ -26,7 +25,6 @@ class Player:
             scale(pygame.image.load(os.path.join(PLAYER_DIR, "walk4.png")).convert_alpha())
         ]
 
-        # Imagem "base" atual (sem flip)
         self.base_image = self.idle_frames[0]
         self.rect = self.base_image.get_rect(midbottom=(x, floor_rect.top))
 
@@ -80,6 +78,5 @@ class Player:
                 self.base_image = self.idle_frames[self.current_frame % len(self.idle_frames)]
 
     def draw(self, screen):
-        # Aplica flip só aqui, na hora de desenhar
         image_to_draw = pygame.transform.flip(self.base_image, True, False) if self.facing_left else self.base_image
         screen.blit(image_to_draw, self.rect)
