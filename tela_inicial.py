@@ -73,7 +73,7 @@ while running:
         pulse_alpha = max(0, pulse_alpha)
 
         if pulse_radius >= max_coverage_radius:
-            game_state = 'next_screen' # colocar o link
+            running = False # colocar o link
 
     # --- Desenho na Tela ---
     screen.blit(background_image, (0, 0))
@@ -90,7 +90,7 @@ while running:
         screen.blit(pulse_surface, (0, 0))
 
     pygame.display.flip()
-
+    
     # --- Controle de FPS ---
     clock.tick(60)
 

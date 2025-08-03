@@ -1,4 +1,4 @@
-# Incantatum
+# Incantatun
 
 Jogo 2D em Python com Pygame inspirado no universo de Harry Potter, onde o jogador participa de duelos mágicos, utilizando feitiços clássicos via teclado ou comandos de voz.
 
