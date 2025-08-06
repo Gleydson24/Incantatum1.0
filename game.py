@@ -16,7 +16,7 @@ map_img = pygame.image.load(MAP_PATH).convert()
 
 map_bg = pygame.transform.scale(map_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-floor_rect = pygame.Rect(5, 1030, 1400, 88)
+floor_rect = pygame.Rect(5, 1030, 1900, 88)
 
 player = Player(15, floor_rect.top - 20, floor_rect, screen_height=SCREEN_HEIGHT)
 
