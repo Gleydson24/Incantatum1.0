@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+from game import game_loop
 
 # --- Configurações Iniciais ---
 SCREEN_WIDTH = 1366
@@ -14,7 +15,7 @@ BUTTON_COLOR = (70, 70, 70)
 
 # --- Inicializa o Pygame ---
 pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(SCREEN_TITLE)
 
 # --- Carrega a Imagem de Fundo ---
@@ -74,6 +75,7 @@ while running:
 
         if pulse_radius >= max_coverage_radius:
             running = False # colocar o link
+            game_loop(pygame.display, screen,SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # --- Desenho na Tela ---
     screen.blit(background_image, (0, 0))

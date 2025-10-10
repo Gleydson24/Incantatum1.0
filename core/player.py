@@ -86,5 +86,7 @@ class Player:
                 self.base_image = self.idle_frames[self.current_frame % len(self.idle_frames)]
 
     def draw(self, screen):
+        #print(screen)
+#        print(self.walk_frames[self.current_frame])
         image_to_draw = pygame.transform.flip(self.base_image, True, False) if self.facing_left else self.base_image
         screen.blit(image_to_draw, self.rect)
