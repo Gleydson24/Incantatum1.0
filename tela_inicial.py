@@ -6,7 +6,7 @@ from game import game_loop
 # --- Configurações Iniciais ---
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
-SCREEN_TITLE = "Encantatun - Luta de Varinhas"
+SCREEN_TITLE = "Incantatum - Luta de Varinhas"
 
 # Cores
 WHITE = (255, 255, 255)
