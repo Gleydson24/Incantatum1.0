@@ -1,0 +1,1 @@
+# pacote core - módulos: player, spell, hud, transitions, voice
