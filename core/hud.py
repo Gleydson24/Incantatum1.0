@@ -28,9 +28,9 @@ class HUD:
             except Exception:
                 pass
 
-        # placeholder: colored rectangle + initial
+        # retângulo
         surf = pygame.Surface(size, pygame.SRCALPHA)
-        # color choice based on hash for visual variety
+        # escolha de cores
         h = abs(hash(spell_name)) % 255
         color = ((100 + h) % 255, (60 + 2*h) % 255, (120 + 3*h) % 255)
         pygame.draw.rect(surf, color, (0,0,size[0], size[1]), border_radius=8)
@@ -41,13 +41,13 @@ class HUD:
         return surf
 
     def draw_bar(self, surface, x, y, width, height, value, max_value, color_fg=(0,255,0)):
-        # plate
+        # placa
         pygame.draw.rect(surface, (30,30,30), (x-6, y-6, width+12, height+12), border_radius=8)
         pygame.draw.rect(surface, (120,0,0), (x, y, width, height), border_radius=6)
         pct = max(0.0, min(1.0, value / max_value if max_value else 0))
         fg_w = int(pct * width)
         pygame.draw.rect(surface, color_fg, (x, y, fg_w, height), border_radius=6)
-        # numeric
+        # numérico
         txt = f"{int(value)}/{int(max_value)}"
         text_surf = self.font.render(txt, True, (230,230,230))
         surface.blit(text_surf, (x + width + 8, y - 2))
@@ -87,7 +87,7 @@ class HUD:
                 ttxt = self.font.render(str(left_s + 1 if left_s>=0 else 0), True, (255,255,255))
                 surface.blit(ttxt, (x + icon_size//2 - ttxt.get_width()//2, y + icon_size//2 - ttxt.get_height()//2))
 
-            # draw mana cost bottom-left of icon
+            # custo mana itens
             mtxt = f"{int(cfg.get('mana',0))}"
             m_surf = self.font.render(mtxt, True, (180,180,255))
             surface.blit(m_surf, (x+4, y+icon_size-18))
@@ -95,17 +95,16 @@ class HUD:
             i += 1
 
     def draw(self, surface, player, enemy, spells_cfg):
-        # left player bars
+        # barras do jogador "esquerda"
         self.draw_bar(surface, 50, 40, 300, 20, player.hp, player.max_hp, color_fg=(60,220,100))
         self.draw_bar(surface, 50, 68, 300, 14, player.mana, player.max_mana, color_fg=(100,170,255))
         surface.blit(self.font.render(str(player.name), True, (230,230,230)), (50, 12))
 
-        # right enemy bars
+        # barras do jogador "direita"
         x = self.screen_width - 350
         self.draw_bar(surface, x, 40, 300, 20, enemy.hp, enemy.max_hp, color_fg=(230,80,80))
         self.draw_bar(surface, x, 68, 300, 14, enemy.mana, enemy.max_mana, color_fg=(100,170,255))
         surface.blit(self.font.render(str(enemy.name), True, (230,230,230)), (x, 12))
 
-        # draw spells icons and cooldowns bottom-left area
-        # if spells_cfg is an ordered dict, the insertion order is preserved; if not, Python 3.7+ dict keeps insertion order
+        # feitiços e esperas
         self.draw_spell_cooldowns(surface, spells_cfg, player, 40, self.font.get_height() + 120)
