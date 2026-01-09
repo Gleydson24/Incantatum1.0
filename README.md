@@ -1,60 +1,105 @@
-# Incantatun
+# Incantatum
 
-Jogo 2D em Python com Pygame inspirado no universo de Harry Potter, onde o jogador participa de duelos mágicos, utilizando feitiços clássicos via teclado ou comandos de voz.
+Incantatum é um jogo de luta e duelo mágico 2D desenvolvido em Python com Pygame. Inspirado no universo bruxo, o projeto evoluiu de um simples duelo para uma experiência completa com elementos de RPG, múltiplos métodos de controle (incluindo visão computacional e mobile) e integração com Inteligência Artificial Generativa.
 
----
+# 1. 🎮 Visão Geral
 
-## 1. 🎮 Visão Geral
+Tecnologia Principal: Python 3.10+ e Pygame 2.6.1
 
-- **Tecnologia Utilizada**: Python 3.11 + Pygame 2.6.0  
-- **Descrição**: Um duelo mágico entre dois bruxos. O jogador pode usar magias como `Expelliarmus`, `Protego` e `Incendio`, com HUD de vida, mana e efeitos visuais.  
-- **Objetivo**: Criar uma experiência jogável com orientação a objetos, interface visual e controle de feitiços via voz.
+Gênero: Fighting Game / Arcade / RPG Light
 
----
+Descrição: Participe de duelos intensos utilizando feitiços icônicos. O jogo vai além do teclado, permitindo que o jogador use o celular como varinha (via WiFi), comande feitiços por voz ou use uma varinha real detectada pela webcam.
 
-## 2. 🧠 Funcionalidades
+Destaque: Sistema de Perfil persistente com XP, Níveis, Missões Diárias automáticas e um Chatbot integrado com IA (LLM) para conversar com personagens.
 
-### ✅ Motor do Jogo:
-- Personagens com movimentação e animação básica.  
-- Sistema de magias com dano, tempo de recarga e consumo de mana.  
-- Barra de vida e mana com HUD visual.  
-- Sistema de vitória e derrota.  
+# 2. 🚀 Funcionalidades Principais
+   
+⚔️ Sistema de Combate & Gameplay
 
-### 🎤 Comando de Voz:
-- Integração com biblioteca `speechrecognition` para lançar magias falando (ex: "Protego").  
-- Reconhecimento de voz funciona durante o duelo.  
+Mecânica de Duelo: 6 feitiços distintos (Incendio, Protego, Expelliarmus, Stupefy, Sectumsempra, Avada Kedavra), cada um com atributos de dano, velocidade e custo de mana.
 
-### 🎨 Interface:
-- Telas de início, Escolha de personagem e adversário, Tela da Luta, Pausa, Tela de vitória e game over.  
-- Sons mágicos e efeitos visuais para os feitiços.
+Clash de Magias: Quando dois feitiços colidem, inicia-se uma disputa de "esmagar botões" (button mashing) para vencer o embate.
 
----
+# Modos de Jogo:
 
-## 3. 📦 Requisitos
-Python 3.11
+Solo (vs IA): Duelar contra o computador.
 
-Pygame 2.6.0
+PvP Local: Dois jogadores no mesmo teclado.
 
-SpeechRecognition
+Rankeada (Online): Em construção
 
-PyAudio (ou alternativa como sounddevice)
+Treino: Modo livre com boneco de teste e reset instantâneo.
 
----
+# 🧙‍♂️ RPG e Progressão (Save System)
 
-## 4. 🔮 Melhorias Futuras
-Modo multiplayer local (2 jogadores).
+Perfil de Jogador: Nome editável, título desbloqueável (ex: "Mestre Duelista") e estatísticas vitais (vitórias/derrotas).
 
-Novos feitiços e animações personalizadas.
+Sistema de Avatar: Escolha entre ícones internos ou importe sua própria imagem do computador.
 
-Sistema de personagem com atributos (velocidade, magia, defesa).
+Nível e XP: Ganhe experiência completando desafios e suba de nível.
 
-Inteligência artificial mais elaborada.
+Maestria: O jogo rastreia quantas vezes você usou cada feitiço.
 
-Fase de tutorial.
+# 📅 Missões Diárias (Live Service Local)
 
----
+Gerador Automático: O jogo detecta a data e gera 3 novas missões aleatórias todo dia (ex: "Vença 3 partidas", "Use Incendio 10 vezes").
 
-## 5. 👥 Equipe
-Desenvolvimento: Gleydson Dallyson Pimenta de Brito e Eduardo Silva Santos
+Histórico: Registro permanente das conquistas desbloqueadas.
 
-Design / Frontend: Gleydson Dallyson Pimenta de Brito e Eduardo Silva Santos
+# 🤖 Inteligência Artificial & Social
+
+Chat Híbrido:
+
+Amigos: Interface simulada de chat.
+
+Personagens (IA Real): Integração com a API Groq (Llama 3). Converse livremente com Harry, Rony, Hermione ou Dumbledore. Eles respondem com personalidade e contexto.
+
+# 📱 Controles Inovadores
+
+Teclado: Controles clássicos (WASD).
+
+Voz: Use o microfone para conjurar feitiços falando os nomes.
+
+Mobile (Celular): Conecte seu celular via WiFi (Flask Server) e use-o como controle touchscreen.
+
+Webcam (Visão Computacional): Rastreamento de cores via OpenCV. Use um objeto colorido como varinha para mirar e atirar.
+
+# 4. 🎨 Interface e UX
+   
+Menu Dinâmico: Botões animados, efeitos de partículas e transições.
+
+Grimório: Livro interativo explicando cada feitiço.
+
+Configurações: Ajuste de volume, calibração de câmera e toggles de FPS.
+
+Créditos Cinematográficos: Tela de créditos com rolagem automática (scrolling text).
+
+# 6. 📦 Requisitos e Instalação
+   
+Para rodar o jogo com todas as funcionalidades, as seguintes bibliotecas são necessárias:
+
+# Cole este código em seu Terminal (CMD, VS CODE, PowerShell ):
+
+# pip install pygame numpy opencv-python SpeechRecognition pyaudio flask groq
+
+# Nota: Para o chat com IA funcionar, é necessário configurar uma API KEY gratuita da Groq no arquivo scripts/ai_service.py.
+# OU USAR ESSA API: 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 "Já inclusa no código"
+
+# 8. 🕹️ Controles Padrão (Teclado)
+
+Ação	         Player 1           	Player 2 (PvP)
+Mover       	W / A / S / D      	Setas Direcionais
+Dash	         Shift Esq.	            Shift Dir.
+Incendio	         1	                 Numpad 1
+Protego	           2	                 Numpad 2
+Expelliarmus	     3	                 Numpad 3
+Stupefy	           4	                 Numpad 4
+Sectumsempra	     5	                 Numpad 5
+Avada Kedavra      X	                 Numpad 0
+Disputa	         Espaço	                Enter
+
+# 9. 👥 Equipe de Desenvolvimento
+
+# Gleydson Dallyson Pimenta de Brito - Eduardo Silva Santos
+
+# "Feito com Python e Magia."
