@@ -1,0 +1,13 @@
+{
+    "vitorias_p1": 24,
+    "vitorias_p2": 1,
+    "vitorias_ia": 15,
+    "partidas_totais": 40,
+    "nivel_jogador": 8,
+    "xp_atual": 188.24624783498462,
+    "xp_maximo": 1469.693845669907,
+    "feiticos_desbloqueados": [
+        "expelliarmus",
+        "protego"
+    ]
+}
