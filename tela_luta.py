@@ -79,6 +79,15 @@ def game_loop(screen, jogador_name, oponente_name, SCREEN_WIDTH=1366, SCREEN_HEI
     last_ai_think = pygame.time.get_ticks()
     AI_THINK_MS = 400
 
+    #--musica--
+    pygame.mixer.music.load("musicas/tela de luta (online-audio-converter.com).mp3")
+    pygame.mixer.music.set_volume(0.6)
+    pygame.mixer.music.play(-1)
+
+    # fade in
+    fade_in(screen, color=(0,0,0), speed=12)
+
+
     # fade in
     fade_in(screen, color=(0,0,0), speed=12)
 
@@ -228,6 +237,8 @@ def game_loop(screen, jogador_name, oponente_name, SCREEN_WIDTH=1366, SCREEN_HEI
             pygame.display.flip()
             pygame.time.delay(1500)
             fade_out(screen, color=(0,0,0), speed=12)
+            #--finaliza a musica--
+            pygame.mixer.music.stop()
             return
 
         pygame.display.flip()

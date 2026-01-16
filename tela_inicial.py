@@ -23,6 +23,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(SCREEN_TITLE)
 clock = pygame.time.Clock()
 
+# --- MÚSICA DO MENU / TELA INICIAL ---
+pygame.mixer.init()
+if not pygame.mixer.music.get_busy():
+    pygame.mixer.music.load("musicas/tela inicial (online-audio-converter.com).mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
 # --- Paths robustos ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_PATH = os.path.join(BASE_DIR, "imagens", "minha_arte_de_fundo.jpg")
@@ -69,7 +76,6 @@ class Particle:
         self.color = color
 
     def update(self, dt_ms):
-        dt = dt_ms / 1000.0
         self.x += self.vx * dt_ms
         self.y += self.vy * dt_ms
         self.life -= dt_ms
@@ -78,7 +84,12 @@ class Particle:
     def draw(self, surf):
         alpha = max(0, int(200 * (self.life / self.max_life)))
         s = pygame.Surface((self.size*2, self.size*2), pygame.SRCALPHA)
-        pygame.draw.circle(s, (self.color[0], self.color[1], self.color[2], alpha), (self.size, self.size), self.size)
+        pygame.draw.circle(
+            s,
+            (self.color[0], self.color[1], self.color[2], alpha),
+            (self.size, self.size),
+            self.size
+        )
         surf.blit(s, (int(self.x - self.size), int(self.y - self.size)))
 
 particles = []
@@ -86,7 +97,7 @@ particles = []
 def spawn_particle_alt():
     x = random.randint(0, SCREEN_WIDTH)
     y = random.randint(0, SCREEN_HEIGHT // 2)
-    vx = (random.random() - 0.5) * 0.02 * 1000  # scaled for dt usage
+    vx = (random.random() - 0.5) * 0.02 * 1000
     vy = (0.02 + random.random() * 0.04) * 1000
     size = 6 + int(random.random() * 10)
     life = 2000 + int(random.random() * 2000)
@@ -111,20 +122,22 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1 and game_state == 'menu' and button_rect.collidepoint(event.pos):
                 fade_out(screen, color=(0,0,0), speed=12)
-                iniciar_selecao(screen)  # retorna ao menu quando a seleção/luta terminar
+                iniciar_selecao(screen)  # aqui a luta acontece e a música da luta toca
                 fade_in(screen, color=(0,0,0), speed=12)
 
-    # spawn particles occasionally
+                # garante que a música do menu volte após a luta
+                if not pygame.mixer.music.get_busy():
+                    pygame.mixer.music.load("musicas/tela inicial (online-audio-converter.com).mp3")
+                    pygame.mixer.music.play(-1)
+
     if random.random() < 0.12:
         spawn_particle_alt()
 
-    # update particles
     for p in particles[:]:
         p.update(dt_ms)
         if p.life <= 0:
             particles.remove(p)
 
-    # pulse update
     dt = dt_ms / 1000.0
     pulse += dt * 2.2 * pulse_dir
     if pulse > 1.0:
@@ -134,19 +147,15 @@ while running:
         pulse = 0.0
         pulse_dir = 1
 
-    # draw background
     screen.blit(background_image, (0, 0))
 
-    # draw particles
     for p in particles:
         p.draw(screen)
 
-    # button hover effect
     mouse = pygame.mouse.get_pos()
     hovered = button_rect.collidepoint(mouse)
     color = BUTTON_HOVER if hovered else BUTTON_COLOR
 
-    # draw button with subtle glow based on pulse
     glow_surf = pygame.Surface((button_width+40, button_height+40), pygame.SRCALPHA)
     glow_alpha = int(80 + 120 * pulse)
     pygame.draw.ellipse(glow_surf, (120,120,220, glow_alpha), glow_surf.get_rect())
@@ -155,7 +164,6 @@ while running:
     pygame.draw.rect(screen, color, button_rect, border_radius=18)
     screen.blit(text_surface, text_rect)
 
-    # small hint
     hint = pygame.font.Font(None, 24).render("Clique para começar", True, (200,200,200))
     screen.blit(hint, (SCREEN_WIDTH//2 - hint.get_width()//2, button_y + button_height + 14))
 
