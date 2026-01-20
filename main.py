@@ -3,6 +3,9 @@ import sys
 import os
 import threading
 import socket
+import random
+import subprocess
+import time
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
 
@@ -12,11 +15,11 @@ try:
     from scripts.entities import Mago
     from scripts.save_system import carregar_dados, salvar_dados
     from scripts.grimorio import Grimorio
-    # --- NOVO IMPORT ---
     from scripts.perfil_player import PerfilJogador 
     from scripts.training_mode import ModoTreinamento
     from scripts.desafios import TelaDesafios
     from scripts.creditos import TelaCreditos
+    from scripts.network import CLIENTE_ONLINE
     
     try:
         from scripts.camera_controle import start_camera, CONTROLE_CAMERA
@@ -47,7 +50,27 @@ class Jogo:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
-        self.fim_de_jogo = False
+        
+        # --- AUTO-START SERVIDOR RANKED ---
+        caminho_server = os.path.join("scripts", "server_rank.py")
+        self.processo_server = None
+        if os.path.exists(caminho_server):
+            try:
+                # Inicia o servidor em segundo plano sem abrir janela extra
+                startupinfo = None
+                if os.name == 'nt':
+                    startupinfo = subprocess.STARTUPINFO()
+                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                
+                self.processo_server = subprocess.Popen(
+                    [sys.executable, caminho_server], 
+                    startupinfo=startupinfo,
+                    creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
+                )
+                print("Servidor Rankeado Iniciado Automaticamente.")
+            except Exception as e:
+                print(f"Aviso: Não foi possível iniciar o servidor automaticamente. Erro: {e}")
+        # ----------------------------------
 
         try:
             self.tela = pygame.display.set_mode((LARGURA, ALTURA), pygame.FULLSCREEN | pygame.SCALED)
@@ -74,7 +97,7 @@ class Jogo:
         
         # --- INICIALIZAÇÃO DAS TELAS ---
         self.grimorio = Grimorio(self)
-        self.perfil_jogador = PerfilJogador(self) # Inicializa o novo perfil
+        self.perfil_jogador = PerfilJogador(self)
         self.tela_desafios = TelaDesafios(self)
         self.tela_creditos = TelaCreditos(self)
 
@@ -84,6 +107,9 @@ class Jogo:
         self.aviso_temp = ""
         self.timer_aviso = 0
         self.mostrando_modos = False
+        
+        # Matchmaking
+        self.timer_matchmaking = 0
         
         self.usar_camera = False
         self.usar_voz = False
@@ -121,7 +147,6 @@ class Jogo:
         self.bg_derrota = self.carregar_imagem("data/telas/derrota.png", fallback_cor=(50, 0, 0))
         self.snd_cast = None
         if os.path.exists("data/sounds/cast.wav"): self.snd_cast = pygame.mixer.Sound("data/sounds/cast.wav")
-        
 
     def carregar_imagem(self, path, fallback_cor=None, fallback_func=None):
         if os.path.exists(path):
@@ -135,7 +160,6 @@ class Jogo:
         return s
 
     def criar_botoes_menu(self):
-        # Os botões transparentes sobre a imagem de menu
         self.botoes_menu = {
             "jogar": Botao(119, 100, 205, 50, texto="", cor_fundo=None), 
             "treino": Botao(114, 164, 269, 50, texto="", cor_fundo=None),
@@ -171,10 +195,10 @@ class Jogo:
         self.slider_musica = Slider(cx - 100, cy - 120, 200, 0, 1, 0.3)
         self.slider_sfx = Slider(cx - 100, cy - 60, 200, 0, 1, 1.0)
         
-        self.chk_mobile = Checkbox(cx - 100, cy, "Controle Pelo Celular", ativo=True)
-        self.chk_voz = Checkbox(cx - 100, cy + 30, "Comandos de Voz", ativo=False)
-        self.chk_camera = Checkbox(cx - 100, cy + 60, "Câmera (Varinha)", ativo=False)
-        self.chk_fps = Checkbox(cx - 100, cy + 90, "Mostrar FPS", ativo=False)
+        self.chk_mobile = Checkbox(cx - 100, cy, "Mobile", ativo=True)
+        self.chk_voz = Checkbox(cx - 100, cy + 30, "Voz", ativo=False)
+        self.chk_camera = Checkbox(cx - 100, cy + 60, "Câmera", ativo=False)
+        self.chk_fps = Checkbox(cx - 100, cy + 90, "FPS", ativo=False)
         
         y_btns = cy + 150
         
@@ -182,9 +206,14 @@ class Jogo:
         self.btn_calibrar = Botao(cx - 65, y_btns, 130, 40, "Calibrar", cor_fundo=(30, 30, 60), tamanho_fonte=18)
         self.btn_voltar_conf = Botao(cx + 80, y_btns, 130, 40, "Voltar", cor_fundo=(50, 50, 50), tamanho_fonte=18)
         
+        # --- INICIALIZAÇÃO CORRETA DOS TOOLTIPS ---
         self.tip_musica = BotaoAjuda(cx + 130, cy - 120, "Música", ["Volume da trilha sonora."])
         self.tip_sfx = BotaoAjuda(cx + 130, cy - 60, "Efeitos", ["Volume dos feitiços e impactos."])
-        self.tip_mobile = BotaoAjuda(cx + 200, cy, "Mobile", [f"WiFi: {socket.gethostbyname(socket.gethostname())}:5000"])
+        
+        try: ip = socket.gethostbyname(socket.gethostname())
+        except: ip = "127.0.0.1"
+        
+        self.tip_mobile = BotaoAjuda(cx + 200, cy, "Mobile", [f"WiFi: {ip}:5000"])
         self.tip_voz = BotaoAjuda(cx + 170, cy + 30, "Voz", ["Fale os feitiços no microfone."])
         self.tip_camera = BotaoAjuda(cx + 170, cy + 60, "Câmera", ["Use um objeto colorido como varinha."])
         self.tip_fps = BotaoAjuda(cx + 170, cy + 90, "FPS", ["Mostra quadros por segundo."])
@@ -205,10 +234,10 @@ class Jogo:
 
     def processar_comando_voz(self, texto):
         if not self.player or self.player.morto: return
-        if "fogo" in texto or "incendio" in texto: self.player.castar_feitiço("incendio")
-        elif "escudo" in texto or "protego" in texto: self.player.castar_feitiço("protego")
-        elif "expelliarmus" in texto: self.player.castar_feitiço("expelliarmus")
-        elif "avada" in texto: self.player.castar_feitiço("avada kedavra")
+        if "fogo" in texto or "incendio" in texto: self.player.castar_feitico("incendio")
+        elif "escudo" in texto or "protego" in texto: self.player.castar_feitico("protego")
+        elif "expelliarmus" in texto: self.player.castar_feitico("expelliarmus")
+        elif "avada" in texto: self.player.castar_feitico("avada kedavra")
 
     def iniciar_batalha(self, modo):
         self.modo_jogo = modo
@@ -219,10 +248,13 @@ class Jogo:
         self.particulas = []
         self.textos_flutuantes = []
         
-        ctrl_p1 = CONTROLES_SOLO if modo == 1 else CONTROLES_P1_PVP
+        ctrl_p1 = CONTROLES_SOLO if modo != 2 else CONTROLES_P1_PVP
         ctrl_p2 = CONTROLES_P2_PVP if modo == 2 else {}
         is_p2_human = (modo == 2)
-        nome_p2 = "Draco (IA)" if modo == 1 else "Player 2"
+        
+        if modo == 3: nome_p2 = "Guardião (Ranked)"
+        elif modo == 1: nome_p2 = "Draco (IA)"
+        else: nome_p2 = "Player 2"
         
         self.player = Mago(200, CHAO_Y, "Harry", self, ctrl_p1, "data/P1", is_human=True, lado_inicial_dir=True)
         self.inimigo = Mago(LARGURA - 200, CHAO_Y, nome_p2, self, ctrl_p2, "data/P1", is_human=is_p2_human, lado_inicial_dir=False)
@@ -238,16 +270,20 @@ class Jogo:
         self.mudar_estado(JOGO)
 
     def iniciar_cena_morte(self, quem):
-        if self.estado != JOGO:
-            return
+        if self.estado != JOGO: return
         self.fim_de_jogo = True
         self.mudar_estado(CENA_MORTE)
-        self.timer_morte = 30
+        self.timer_morte = 60
 
     def mudar_estado(self, novo):
         self.estado = novo
         if TEM_MOBILE: atualizar_estado_jogo(novo)
         pygame.event.clear()
+
+    def iniciar_disputa(self):
+        self.mudar_estado(DISPUTA)
+        self.clash_progress = 50 
+        self.timer_aviso = 0
 
     def update_jogo(self):
         self.player.update()
@@ -275,44 +311,28 @@ class Jogo:
 
     def processar_inputs_externos(self):
         if TEM_MOBILE and self.usar_mobile and not self.player.morto:
-            if CONTROLE_REMOTO.get("esquerda"): self.player.mover_input(-1)
-            elif CONTROLE_REMOTO.get("direita"): self.player.mover_input(1)
+            if CONTROLE_REMOTO.get("esquerda"): self.player.rect.x -= 5
+            elif CONTROLE_REMOTO.get("direita"): self.player.rect.x += 5
             if CONTROLE_REMOTO.get("dash"): 
                 self.player.ativar_dash(); CONTROLE_REMOTO["dash"] = False
             for f in ["incendio", "protego", "expelliarmus", "avada"]:
                 if CONTROLE_REMOTO.get(f):
                     nome = "avada kedavra" if f == "avada" else f
-                    self.player.castar_feitiço(nome)
+                    self.player.castar_feitico(nome)
                     CONTROLE_REMOTO[f] = False
 
         if TEM_CAMERA and self.usar_camera and CONTROLE_CAMERA.get("ativo"):
             if CONTROLE_CAMERA.get("clique"):
-                self.player.castar_feitiço("incendio") 
+                self.player.castar_feitico("incendio") 
                 CONTROLE_CAMERA["clique"] = False
 
-    def iniciar_disputa(self):
-        self.mudar_estado(DISPUTA)
-        self.clash_progress = 50 
-        self.timer_aviso = 0
-
     def update_disputa(self):
-        if self.modo_jogo == 1:
-            self.clash_progress -= 0.6 
-        else:
-            if self.clash_progress > 50: self.clash_progress -= 0.1
-            elif self.clash_progress < 50: self.clash_progress += 0.1
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_KP_ENTER]:
-                self.clash_progress -= 2
-        
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            self.clash_progress += 2
+        # Lógica da IA apenas (Inputs estão no loop)
+        if self.modo_jogo != 2: # Se IA
+            # Chance de pressionar
+            if random.randint(0, 100) < 15: 
+                self.clash_progress -= 15
 
-        if TEM_MOBILE and CONTROLE_REMOTO.get("incendio"):
-            self.clash_progress += 2
-            CONTROLE_REMOTO["incendio"] = False
-        
         if self.clash_progress >= 100:
             self.mudar_estado(JOGO)
             self.inimigo.receber_dano(None, 50) 
@@ -327,14 +347,14 @@ class Jogo:
             self.particulas.append(ParticulaMagica(pos[0], pos[1], (255, 100, 0), "explosao"))
 
     def desenhar_hud(self):
-        pygame.draw.rect(self.tela, SANGUE_ESCURO, (50, 50, 200 * (self.player.vida/300), 20))
-        pygame.draw.rect(self.tela, AZUL_MANA, (50, 75, 200 * (self.player.mana/300), 10))
+        pygame.draw.rect(self.tela, SANGUE_ESCURO, (50, 50, 200 * (self.player.vida/100), 20))
+        pygame.draw.rect(self.tela, AZUL_MANA, (50, 75, 200 * (self.player.mana/100), 10))
         pygame.draw.rect(self.tela, BRANCO, (50, 50, 200, 20), 2)
         
         offset = LARGURA - 250
-        pygame.draw.rect(self.tela, SANGUE_ESCURO, (offset, 50, 200 * (self.inimigo.vida/300), 20))
+        pygame.draw.rect(self.tela, SANGUE_ESCURO, (offset, 50, 200 * (self.inimigo.vida/100), 20))
         pygame.draw.rect(self.tela, BRANCO, (offset, 50, 200, 20), 2)
-        pygame.draw.rect(self.tela, AZUL_MANA, (offset, 75, 200 * (self.inimigo.mana/300), 10))
+        pygame.draw.rect(self.tela, AZUL_MANA, (offset, 75, 200 * (self.inimigo.mana/100), 10))
 
     def loop(self):
         while self.rodando:
@@ -344,15 +364,17 @@ class Jogo:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: self.rodando = False
                 
-                if self.estado == GRIMORIO:
-                    self.grimorio.processar_eventos(event)
-                
-                # --- EVENTOS DO PERFIL ---
-                if self.estado == PERFIL:
-                    self.perfil_jogador.processar_eventos(event)
+                if self.estado == GRIMORIO: self.grimorio.processar_eventos(event)
+                if self.estado == PERFIL: self.perfil_jogador.processar_eventos(event)
+                if self.estado == DESAFIOS: self.tela_desafios.processar_eventos(event)
+                if self.estado == CREDITOS: self.tela_creditos.processar_eventos(event)
 
-                if self.estado == DESAFIOS:
-                    self.tela_desafios.processar_eventos(event)
+                # --- INPUT DA DISPUTA (CLASH) ---
+                if event.type == pygame.KEYDOWN and self.estado == DISPUTA:
+                    if event.key == pygame.K_SPACE: self.clash_progress += 15
+                    if self.modo_jogo == 2 and (event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER):
+                        self.clash_progress -= 15
+                # --------------------------------
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.estado == INTRO: 
@@ -363,19 +385,22 @@ class Jogo:
                             if self.botoes_modos["ia"].desenhar(self.tela): self.iniciar_batalha(1); self.mostrando_modos = False
                             elif self.botoes_modos["p2"].desenhar(self.tela): self.iniciar_batalha(2); self.mostrando_modos = False
                             elif self.botoes_modos["voltar"].desenhar(self.tela): self.mostrando_modos = False
-                            elif self.botoes_modos["rank"].desenhar(self.tela): pass
+                            elif self.botoes_modos["rank"].desenhar(self.tela): 
+                                if not CLIENTE_ONLINE.conectado:
+                                    self.aviso_temp = "FAÇA LOGIN NO PERFIL!"; self.timer_aviso = 120
+                                else:
+                                    self.mudar_estado(PROCURANDO)
+                                    self.timer_matchmaking = 120
+                                    self.mostrando_modos = False
                         else:
                             if self.botoes_menu["jogar"].desenhar(self.tela): self.mostrando_modos = True
                             elif self.botoes_menu["treino"].desenhar(self.tela): ModoTreinamento(self).rodar(); self.mudar_estado(MENU)
-                            
-                            # --- ATUALIZADO: ABRIR PERFIL ---
                             elif self.botoes_menu["perfil"].desenhar(self.tela): self.mudar_estado(PERFIL)
-                            
                             elif self.botoes_menu["grimorio"].desenhar(self.tela): self.mudar_estado(GRIMORIO)
                             elif self.botoes_menu["desafios"].desenhar(self.tela): self.mudar_estado(DESAFIOS)
                             elif self.botoes_menu["config"].desenhar(self.tela): self.mudar_estado(CONFIG)
-                            elif self.botoes_menu["creditos"].desenhar(self.tela):
-                                self.tela_creditos.resetar() # Reinicia o scroll
+                            elif self.botoes_menu["creditos"].desenhar(self.tela): 
+                                self.tela_creditos.resetar()
                                 self.mudar_estado(CREDITOS)
                             elif self.botoes_menu["sair"].desenhar(self.tela): self.rodando = False
 
@@ -391,7 +416,6 @@ class Jogo:
                                 self.confirmando_reset = False
                         else:
                             if self.btn_voltar_conf.desenhar(self.tela): self.mudar_estado(MENU)
-                            if self.estado == CREDITOS: self.tela_creditos.processar_eventos(event)
                             
                             if self.chk_mobile.checar_clique(event.pos): self.usar_mobile = self.chk_mobile.ativo
                             if self.chk_voz.checar_clique(event.pos): self.usar_voz = self.chk_voz.ativo
@@ -405,13 +429,22 @@ class Jogo:
                                 self.confirmando_reset = True
 
                     elif self.estado in [VITORIA, DERROTA]:
-                        if self.botoes_vitoria["menu"].desenhar(self.tela): self.mudar_estado(MENU)
+                        if self.botoes_vitoria["menu"].desenhar(self.tela): 
+                            self.botoes_vitoria["menu"].clicado = False
+                            self.mudar_estado(MENU)
+                        
+                        if self.estado == VITORIA:
+                             if self.botoes_vitoria["continuar"].desenhar(self.tela):
+                                 self.botoes_vitoria["continuar"].clicado = False
+                                 self.iniciar_batalha(self.modo_jogo)
+                        else:
+                             if self.botoes_derrota["revanche"].desenhar(self.tela):
+                                 self.botoes_derrota["revanche"].clicado = False
+                                 self.iniciar_batalha(self.modo_jogo)
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        if self.estado in [JOGO, GRIMORIO, CONFIG, PERFIL, CREDITOS]: self.mudar_estado(MENU)
-                    if self.estado == DISPUTA and event.key == pygame.K_SPACE:
-                        self.clash_progress += 4
+                        if self.estado in [JOGO, GRIMORIO, CONFIG, PERFIL, DESAFIOS, CREDITOS]: self.mudar_estado(MENU)
 
             self.tela.fill(PRETO)
             
@@ -420,23 +453,20 @@ class Jogo:
                 
             elif self.estado == MENU:
                 self.tela.blit(self.bg_menu, (0,0))
-                
                 if self.mostrando_modos:
                     self.botoes_modos["ia"].desenhar(self.tela)
                     self.botoes_modos["p2"].desenhar(self.tela)
                     self.botoes_modos["rank"].desenhar(self.tela)
                     self.botoes_modos["voltar"].desenhar(self.tela)
                 else:
-                    for k, btn in self.botoes_menu.items():
-                        btn.desenhar(self.tela)
+                    for k, btn in self.botoes_menu.items(): btn.desenhar(self.tela)
 
             elif self.estado == GRIMORIO:
                 self.tela.blit(self.bg_menu, (0,0))
                 self.grimorio.desenhar(self.tela)
 
-            # --- DESENHO DO PERFIL ---
             elif self.estado == PERFIL:
-                self.tela.blit(self.bg_menu, (0,0)) # Mantém o fundo do menu
+                self.tela.blit(self.bg_menu, (0,0)) 
                 self.perfil_jogador.desenhar()
 
             elif self.estado == DESAFIOS:
@@ -445,6 +475,15 @@ class Jogo:
 
             elif self.estado == CREDITOS:
                 self.tela_creditos.desenhar()
+            
+            elif self.estado == PROCURANDO:
+                self.tela.blit(self.bg_menu, (0,0))
+                overlay = pygame.Surface((LARGURA, ALTURA), pygame.SRCALPHA); overlay.fill((0,0,0,200)); self.tela.blit(overlay, (0,0))
+                dots = "." * (int(pygame.time.get_ticks() / 500) % 4)
+                txt = self.fonte_titulo.render(f"Procurando Oponente{dots}", True, OURO)
+                self.tela.blit(txt, (LARGURA//2 - txt.get_width()//2, ALTURA//2))
+                self.timer_matchmaking -= 1
+                if self.timer_matchmaking <= 0: self.iniciar_batalha(3)
 
             elif self.estado == CONFIG:
                 self.tela.blit(self.bg_menu, (0,0))
@@ -495,10 +534,8 @@ class Jogo:
                     rect_pop = pygame.Rect(cx - 150, cy - 80, 300, 160)
                     pygame.draw.rect(self.tela, (10, 10, 10), rect_pop)
                     pygame.draw.rect(self.tela, (255, 0, 0), rect_pop, 2)
-                    
                     msg = self.fonte_ui.render("Tem certeza?", True, BRANCO)
                     self.tela.blit(msg, (cx - msg.get_width()//2, cy - 50))
-                    
                     self.btn_confirma_sim.desenhar(self.tela)
                     self.btn_confirma_nao.desenhar(self.tela)
                 
@@ -561,6 +598,11 @@ class Jogo:
                 self.timer_morte -= 1
                 if self.timer_morte <= 0:
                     vitoria_player = not self.player.morto
+                    
+                    if self.modo_jogo == 3 and CLIENTE_ONLINE.conectado:
+                        CLIENTE_ONLINE.enviar_partida("win" if vitoria_player else "loss")
+                        if vitoria_player: self.aviso_temp = "ELO ATUALIZADO!"
+                    
                     self.dados_globais["partidas_totais"] += 1
                     if vitoria_player: 
                         self.dados_globais["vitorias_p1"] += 1
@@ -578,6 +620,10 @@ class Jogo:
                 
             pygame.display.flip()
         
+        # Encerra servidor ao fechar
+        if self.processo_server:
+            self.processo_server.terminate()
+            
         pygame.quit()
         sys.exit()
 
