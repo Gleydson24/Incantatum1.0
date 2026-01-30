@@ -19,43 +19,43 @@
     "avatar_id": -1,
     "avatar_path": "C:/Users/ADMIN/Downloads/Rosenilda.jpg",
     "xp_proximo_nivel": 1000,
-    "data_ultima_missao": "2026-01-27",
+    "data_ultima_missao": "2026-01-30",
     "missoes_diarias": [
         {
-            "id": "daily_2026-01-27_0",
-            "titulo": "Duelista Nato",
-            "desc": "Ven\u00e7a 2 partidas (P1).",
-            "meta": 2,
-            "xp": 300,
-            "valor_inicial": 44,
-            "tipo_dado": "vitorias_p1",
-            "chave_maestria": null,
-            "resgatado": false,
-            "data": "2026-01-27"
-        },
-        {
-            "id": "daily_2026-01-27_1",
+            "id": "daily_2026-01-30_0",
             "titulo": "Treino Constante",
-            "desc": "Jogue 4 partidas completas.",
-            "meta": 4,
-            "xp": 400,
-            "valor_inicial": 116,
+            "desc": "Jogue 3 partidas completas.",
+            "meta": 3,
+            "xp": 300,
+            "valor_inicial": 120,
             "tipo_dado": "partidas_totais",
             "chave_maestria": null,
             "resgatado": false,
-            "data": "2026-01-27"
+            "data": "2026-01-30"
         },
         {
-            "id": "daily_2026-01-27_2",
+            "id": "daily_2026-01-30_1",
             "titulo": "Defesa Impenetr\u00e1vel",
-            "desc": "Use Protego 12 vezes.",
-            "meta": 12,
-            "xp": 480,
-            "valor_inicial": 20,
+            "desc": "Use Protego 8 vezes.",
+            "meta": 8,
+            "xp": 320,
+            "valor_inicial": 23,
             "tipo_dado": "protego",
             "chave_maestria": "protego",
             "resgatado": false,
-            "data": "2026-01-27"
+            "data": "2026-01-30"
+        },
+        {
+            "id": "daily_2026-01-30_2",
+            "titulo": "Duelista Nato",
+            "desc": "Ven\u00e7a 1 partidas (P1).",
+            "meta": 1,
+            "xp": 150,
+            "valor_inicial": 45,
+            "tipo_dado": "vitorias_p1",
+            "chave_maestria": null,
+            "resgatado": false,
+            "data": "2026-01-30"
         }
     ],
     "historico_conquistas": [

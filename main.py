@@ -86,7 +86,17 @@ class Jogo:
         if TEM_MOBILE: start_remote()
 
         self.carregar_assets()
-        
+
+        # >>> ADICIONADO: iniciar música de fundo <<<
+        if os.path.exists(self.musica_fundo_path):
+            pygame.mixer.music.load(self.musica_fundo_path)
+            pygame.mixer.music.set_volume(self.slider_musica.valor if hasattr(self, "slider_musica") else 0.3)
+            pygame.mixer.music.play(-1)
+
+                    # >>> ADICIONADO: caminho da música da batalha <<<
+        self.musica_batalha_path = "data/sons/tela-de-luta.mp3"
+
+
         self.fonte_titulo = pygame.font.SysFont("Garamond", 60, bold=True)
         self.fonte_ui = pygame.font.SysFont("Garamond", 22)
         self.fonte_aviso = pygame.font.SysFont("Arial", 40, bold=True)
@@ -153,6 +163,18 @@ class Jogo:
         self.bg_derrota = self.carregar_imagem("data/telas/derrota.png", fallback_cor=(50, 0, 0))
         self.snd_cast = None
         if os.path.exists("data/sounds/cast.wav"): self.snd_cast = pygame.mixer.Sound("data/sounds/cast.wav")
+
+        # >>> ADICIONADO: caminho da música de fundo <<<
+        self.musica_fundo_path = "data/sons/tela-inicial.mp3"
+
+    # >>> ADICIONADO: função para trocar música de fundo <<<
+    def tocar_musica(self, caminho):
+        if os.path.exists(caminho):
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(caminho)
+            pygame.mixer.music.set_volume(self.slider_musica.valor)
+            pygame.mixer.music.play(-1)
+
 
     def carregar_imagem(self, path, fallback_cor=None, fallback_func=None):
         if os.path.exists(path):
@@ -285,6 +307,12 @@ class Jogo:
         self.estado = novo
         if TEM_MOBILE: atualizar_estado_jogo(novo)
         pygame.event.clear()
+
+        # >>> ADICIONADO: troca automática de música por estado <<<
+        if novo == JOGO:
+            self.tocar_musica(self.musica_batalha_path)
+        elif novo in [MENU, INTRO, CONFIG, GRIMORIO, PERFIL, DESAFIOS, CREDITOS, VITORIA, DERROTA]:
+            self.tocar_musica(self.musica_fundo_path)
 
     def iniciar_disputa(self):
         self.mudar_estado(DISPUTA)
