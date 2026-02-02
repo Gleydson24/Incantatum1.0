@@ -8,15 +8,12 @@ from scripts.utils import TextoFlutuante, fatiar_spritesheet_horizontal
 # CONFIGURAÇÃO DOS PERSONAGENS (DATABASE)
 # =====================================================
 DB_ANIMACAO = {
-    # P1 (Harry) usa o sistema antigo (pasta vazia aqui usa lógica legacy)
     "P1": "LEGACY", 
 
-    # --- INIMIGOS (Adicionado 'ajuste_y' para corrigir a flutuação) ---
-    
     # Evil Wizard 1
     "P2": {
         "escala": 2.5,
-        "ajuste_y": 116, # Empurra 25 pixels para baixo
+        "ajuste_y": 116,
         "mapa": {
             "Idle": "Idle.png",
             "walk": "move.png",
@@ -46,33 +43,21 @@ DB_ANIMACAO = {
             "dead": "Death.png"
         }
     },
-    # Evil Wizard 4
-    "P5": {
-        "escala": 2.5,
-        "ajuste_y": 100,
-        "mapa": {
-            "Idle": "Idle.png",
-            "walk": "Walk.png",
-            "movfire": "Attack1.png",
-            "dead": "Death.png"
-        }
-    },
+    # P5 FOI REMOVIDO DAQUI
+    
     # Goose (O Pato Boss)
     "Goose": {
         "escala": 3.0,
-        "ajuste_y": 120, # Pato geralmente precisa de menos ajuste
+        "ajuste_y": 120, 
         "mapa": {
             "Idle": "Idle.png",
             "walk": "Walk.png", 
             "movfire": "Flap.png", 
-            "dead": "Idle.png"
+            "dead": "Idle.png" 
         }
     }
 }
 
-# =====================================================
-# RASTRO DE DASH
-# =====================================================
 class RastroFantasma(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         super().__init__()
@@ -85,9 +70,6 @@ class RastroFantasma(pygame.sprite.Sprite):
         if self.timer <= 0: self.kill()
         else: self.image.set_alpha(self.timer * 10)
 
-# =====================================================
-# MAGIA
-# =====================================================
 class Magia(pygame.sprite.Sprite):
     def __init__(self, x, y, nome, direcao, jogo, dono):
         super().__init__()
@@ -108,15 +90,15 @@ class Magia(pygame.sprite.Sprite):
         pygame.draw.circle(self.image, self.cor, (25, 12), 9)
         pygame.draw.circle(self.image, (255, 255, 255), (22, 9), 4)
         self.rect = self.image.get_rect(center=(x, y))
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
         self.rect.x += self.velocidade
         if self.rect.right < 0 or self.rect.left > LARGURA: self.kill()
 
-# =====================================================
-# MAGO
-# =====================================================
 class Mago(pygame.sprite.Sprite):
+    # --- CORREÇÃO DO ERRO TYPEERROR ---
+    # Adicionei 'dificuldade=1.0' no final dos argumentos
     def __init__(self, x, y, nome, jogo, controles, pasta, is_human=True, lado_inicial_dir=True, dificuldade=1.0):
         super().__init__()
         self.jogo = jogo
@@ -157,14 +139,18 @@ class Mago(pygame.sprite.Sprite):
         
         self._carregar_animacoes(self.pasta)
         
+        # --- CORREÇÃO: Fallback Transparente (Tira o quadrado roxo) ---
         if not self.anim["Idle"]:
-            surf = pygame.Surface((50,80)); surf.fill((100,0,100))
-            self.anim["Idle"] = [surf]
+            s = pygame.Surface((50,80), pygame.SRCALPHA); s.fill((0,0,0,0)) # Transparente
+            self.anim["Idle"] = [s]
 
         self.image = self.anim["Idle"][0]
         
         # APLICA O AJUSTE VERTICAL AQUI (y + self.ajuste_y)
         self.rect = self.image.get_rect(midbottom=(x, y + self.ajuste_y))
+        
+        # Cria a máscara para colisão precisa
+        self.mask = pygame.mask.from_surface(self.image)
 
     def _carregar_animacoes(self, pasta):
         nome_pasta = os.path.basename(os.path.normpath(pasta))
@@ -186,7 +172,7 @@ class Mago(pygame.sprite.Sprite):
         else:
             # Lógica LEGACY (P1/Harry)
             escala = 2.2
-            self.ajuste_y = 0 # Legacy geralmente não precisa
+            self.ajuste_y = 0 
             estados = {"Idle": 7, "walk": 6, "movfire": 4, "dead": 6}
             for estado, qtd in estados.items():
                 for i in range(qtd):
@@ -195,7 +181,8 @@ class Mago(pygame.sprite.Sprite):
                         img = pygame.image.load(path).convert_alpha()
                         img = pygame.transform.scale(img, (int(img.get_width()*escala), int(img.get_height()*escala)))
                     else:
-                        img = pygame.Surface((50, 80), pygame.SRCALPHA); img.fill((255, 0, 255))
+                        # --- CORREÇÃO: Fallback Transparente aqui também ---
+                        img = pygame.Surface((50, 80), pygame.SRCALPHA); img.fill((0, 0, 0, 0))
                     self.anim[estado].append(img)
 
     def castar_feitico(self, nome):
@@ -224,7 +211,8 @@ class Mago(pygame.sprite.Sprite):
             return
 
         direcao = 1 if self.facing_right else -1
-        magia = Magia(self.rect.centerx + 40 * direcao, self.rect.centery - 30, nome_real, direcao, self.jogo, self)
+        offset_tiro = 40 if "P1" not in self.pasta else 30
+        magia = Magia(self.rect.centerx + 40 * direcao, self.rect.centery - offset_tiro, nome_real, direcao, self.jogo, self)
         
         if self == self.jogo.player: self.jogo.magias_player.add(magia)
         else: self.jogo.magias_inimigo.add(magia)
@@ -258,9 +246,8 @@ class Mago(pygame.sprite.Sprite):
             img = self.anim["dead"][int(self.frame)]
             self.image = pygame.transform.flip(img, not self.facing_right, False)
             
-            # Garante que ele continue no chão ao morrer
+            self.mask = pygame.mask.from_surface(self.image)
             self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
-            
             return
 
         if self.cast_cd > 0: self.cast_cd -= 1
@@ -321,6 +308,8 @@ class Mago(pygame.sprite.Sprite):
 
         img_original = self.anim[self.estado][int(self.frame)]
         self.image = pygame.transform.flip(img_original, not self.facing_right, False)
-        self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
+        
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect(midbottom=(self.rect.centerx, CHAO_Y + self.ajuste_y))
         
 __all__ = ["Mago", "Magia", "RastroFantasma"]
