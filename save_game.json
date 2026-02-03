@@ -19,43 +19,43 @@
     "avatar_id": -1,
     "avatar_path": "C:/Users/ADMIN/Downloads/Rosenilda.jpg",
     "xp_proximo_nivel": 1200,
-    "data_ultima_missao": "2026-02-02",
+    "data_ultima_missao": "2026-02-03",
     "missoes_diarias": [
         {
-            "id": "daily_2026-02-02_0",
-            "titulo": "Defesa Impenetr\u00e1vel",
-            "desc": "Use Protego 7 vezes.",
-            "meta": 7,
-            "xp": 280,
-            "valor_inicial": 44,
-            "tipo_dado": "protego",
-            "chave_maestria": "protego",
-            "resgatado": false,
-            "data": "2026-02-02"
-        },
-        {
-            "id": "daily_2026-02-02_1",
-            "titulo": "Duelista Nato",
-            "desc": "Ven\u00e7a 1 partidas (P1).",
-            "meta": 1,
-            "xp": 150,
-            "valor_inicial": 35,
-            "tipo_dado": "vitorias_p1",
-            "chave_maestria": null,
-            "resgatado": false,
-            "data": "2026-02-02"
-        },
-        {
-            "id": "daily_2026-02-02_2",
+            "id": "daily_2026-02-03_0",
             "titulo": "Artes das Trevas",
-            "desc": "Use Avada Kedavra 2 vezes.",
-            "meta": 2,
-            "xp": 600,
-            "valor_inicial": 80,
+            "desc": "Use Avada Kedavra 1 vezes.",
+            "meta": 1,
+            "xp": 300,
+            "valor_inicial": 84,
             "tipo_dado": "avada kedavra",
             "chave_maestria": "avada kedavra",
             "resgatado": false,
-            "data": "2026-02-02"
+            "data": "2026-02-03"
+        },
+        {
+            "id": "daily_2026-02-03_1",
+            "titulo": "Mestre do Fogo",
+            "desc": "Use Incendio 7 vezes.",
+            "meta": 7,
+            "xp": 210,
+            "valor_inicial": 184,
+            "tipo_dado": "incendio",
+            "chave_maestria": "incendio",
+            "resgatado": false,
+            "data": "2026-02-03"
+        },
+        {
+            "id": "daily_2026-02-03_2",
+            "titulo": "Defesa Impenetr\u00e1vel",
+            "desc": "Use Protego 6 vezes.",
+            "meta": 6,
+            "xp": 240,
+            "valor_inicial": 46,
+            "tipo_dado": "protego",
+            "chave_maestria": "protego",
+            "resgatado": false,
+            "data": "2026-02-03"
         }
     ],
     "historico_conquistas": [
