@@ -19,10 +19,22 @@
     "avatar_id": -1,
     "avatar_path": "C:/Users/ADMIN/Downloads/Rosenilda.jpg",
     "xp_proximo_nivel": 1200,
-    "data_ultima_missao": "2026-02-05",
+    "data_ultima_missao": "2026-02-06",
     "missoes_diarias": [
         {
-            "id": "daily_2026-02-05_0",
+            "id": "daily_2026-02-06_0",
+            "titulo": "Treino Constante",
+            "desc": "Jogue 2 partidas completas.",
+            "meta": 2,
+            "xp": 200,
+            "valor_inicial": 180,
+            "tipo_dado": "partidas_totais",
+            "chave_maestria": null,
+            "resgatado": false,
+            "data": "2026-02-06"
+        },
+        {
+            "id": "daily_2026-02-06_1",
             "titulo": "Mestre do Fogo",
             "desc": "Use Incendio 13 vezes.",
             "meta": 13,
@@ -31,31 +43,19 @@
             "tipo_dado": "incendio",
             "chave_maestria": "incendio",
             "resgatado": false,
-            "data": "2026-02-05"
+            "data": "2026-02-06"
         },
         {
-            "id": "daily_2026-02-05_1",
-            "titulo": "Duelista Nato",
-            "desc": "Ven\u00e7a 2 partidas (P1).",
-            "meta": 2,
-            "xp": 300,
-            "valor_inicial": 42,
-            "tipo_dado": "vitorias_p1",
-            "chave_maestria": null,
+            "id": "daily_2026-02-06_2",
+            "titulo": "Desarme T\u00e1tico",
+            "desc": "Use Expelliarmus 11 vezes.",
+            "meta": 11,
+            "xp": 385,
+            "valor_inicial": 32,
+            "tipo_dado": "expelliarmus",
+            "chave_maestria": "expelliarmus",
             "resgatado": false,
-            "data": "2026-02-05"
-        },
-        {
-            "id": "daily_2026-02-05_2",
-            "titulo": "Artes das Trevas",
-            "desc": "Use Avada Kedavra 3 vezes.",
-            "meta": 3,
-            "xp": 900,
-            "valor_inicial": 89,
-            "tipo_dado": "avada kedavra",
-            "chave_maestria": "avada kedavra",
-            "resgatado": false,
-            "data": "2026-02-05"
+            "data": "2026-02-06"
         }
     ],
     "historico_conquistas": [
