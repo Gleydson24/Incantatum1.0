@@ -19,43 +19,43 @@
     "avatar_id": -1,
     "avatar_path": "C:/Users/ADMIN/Downloads/Rosenilda.jpg",
     "xp_proximo_nivel": 1200,
-    "data_ultima_missao": "2026-02-03",
+    "data_ultima_missao": "2026-02-05",
     "missoes_diarias": [
         {
-            "id": "daily_2026-02-03_0",
-            "titulo": "Artes das Trevas",
-            "desc": "Use Avada Kedavra 1 vezes.",
-            "meta": 1,
-            "xp": 300,
-            "valor_inicial": 84,
-            "tipo_dado": "avada kedavra",
-            "chave_maestria": "avada kedavra",
-            "resgatado": false,
-            "data": "2026-02-03"
-        },
-        {
-            "id": "daily_2026-02-03_1",
+            "id": "daily_2026-02-05_0",
             "titulo": "Mestre do Fogo",
-            "desc": "Use Incendio 7 vezes.",
-            "meta": 7,
-            "xp": 210,
-            "valor_inicial": 184,
+            "desc": "Use Incendio 13 vezes.",
+            "meta": 13,
+            "xp": 390,
+            "valor_inicial": 206,
             "tipo_dado": "incendio",
             "chave_maestria": "incendio",
             "resgatado": false,
-            "data": "2026-02-03"
+            "data": "2026-02-05"
         },
         {
-            "id": "daily_2026-02-03_2",
-            "titulo": "Defesa Impenetr\u00e1vel",
-            "desc": "Use Protego 6 vezes.",
-            "meta": 6,
-            "xp": 240,
-            "valor_inicial": 46,
-            "tipo_dado": "protego",
-            "chave_maestria": "protego",
+            "id": "daily_2026-02-05_1",
+            "titulo": "Duelista Nato",
+            "desc": "Ven\u00e7a 2 partidas (P1).",
+            "meta": 2,
+            "xp": 300,
+            "valor_inicial": 42,
+            "tipo_dado": "vitorias_p1",
+            "chave_maestria": null,
             "resgatado": false,
-            "data": "2026-02-03"
+            "data": "2026-02-05"
+        },
+        {
+            "id": "daily_2026-02-05_2",
+            "titulo": "Artes das Trevas",
+            "desc": "Use Avada Kedavra 3 vezes.",
+            "meta": 3,
+            "xp": 900,
+            "valor_inicial": 89,
+            "tipo_dado": "avada kedavra",
+            "chave_maestria": "avada kedavra",
+            "resgatado": false,
+            "data": "2026-02-05"
         }
     ],
     "historico_conquistas": [
