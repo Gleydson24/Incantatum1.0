@@ -1,87 +1,70 @@
 {
-    "nome_jogador": "Guest-8347",
+    "nome_jogador": "Guest-9332",
     "nome_alterado": false,
-    "titulo_jogador": "Portador da Maldi\u00e7\u00e3o",
+    "titulo_jogador": "Bruxo Iniciante",
     "avatar_id": 0,
     "avatar_path": "",
-    "partidas_totais": 56,
-    "vitorias_p1": 39,
+    "partidas_totais": 0,
+    "vitorias_p1": 0,
     "vitorias_p2": 0,
     "vitorias_ia": 0,
-    "nivel_jogador": 2,
-    "xp_atual": 220,
-    "xp_proximo_nivel": 1200,
+    "nivel_jogador": 1,
+    "xp_atual": 0,
+    "xp_proximo_nivel": 1000,
     "data_ultima_missao": "2026-02-10",
     "missoes_diarias": [
         {
             "id": "daily_2026-02-10_0",
-            "titulo": "Desarme T\u00e1tico",
-            "desc": "Use Expelliarmus 13 vezes.",
-            "meta": 13,
-            "xp": 455,
-            "valor_inicial": 65,
-            "tipo_dado": "expelliarmus",
-            "chave_maestria": "expelliarmus",
-            "resgatado": false,
-            "data": "2026-02-10"
-        },
-        {
-            "id": "daily_2026-02-10_1",
             "titulo": "Treino Constante",
-            "desc": "Jogue 3 partidas completas.",
-            "meta": 3,
-            "xp": 300,
-            "valor_inicial": 56,
+            "desc": "Jogue 5 partidas completas.",
+            "meta": 5,
+            "xp": 500,
+            "valor_inicial": 0,
             "tipo_dado": "partidas_totais",
             "chave_maestria": null,
             "resgatado": false,
             "data": "2026-02-10"
         },
         {
-            "id": "daily_2026-02-10_2",
+            "id": "daily_2026-02-10_1",
             "titulo": "Defesa Impenetr\u00e1vel",
-            "desc": "Use Protego 7 vezes.",
-            "meta": 7,
-            "xp": 280,
-            "valor_inicial": 42,
+            "desc": "Use Protego 6 vezes.",
+            "meta": 6,
+            "xp": 240,
+            "valor_inicial": 0,
             "tipo_dado": "protego",
             "chave_maestria": "protego",
             "resgatado": false,
             "data": "2026-02-10"
-        }
-    ],
-    "historico_conquistas": [
-        {
-            "titulo": "Desarme T\u00e1tico",
-            "desc": "Use Expelliarmus 8 vezes.",
-            "data": "2026-02-06"
         },
         {
-            "titulo": "Defesa Impenetr\u00e1vel",
-            "desc": "Use Protego 11 vezes.",
-            "data": "2026-02-06"
-        },
-        {
-            "titulo": "Treino Constante",
-            "desc": "Jogue 5 partidas completas.",
-            "data": "2026-02-06"
+            "id": "daily_2026-02-10_2",
+            "titulo": "Mestre do Fogo",
+            "desc": "Use Incendio 12 vezes.",
+            "meta": 12,
+            "xp": 360,
+            "valor_inicial": 0,
+            "tipo_dado": "incendio",
+            "chave_maestria": "incendio",
+            "resgatado": false,
+            "data": "2026-02-10"
         }
     ],
+    "historico_conquistas": [],
     "chat_logs": {},
+    "jojo_desbloqueado": false,
+    "modo_crianca": false,
+    "modo_critico": false,
     "varinha": {
-        "madeira": "Azevinho",
-        "nucleo": "Pena de F\u00eanix",
-        "flex": "Flex\u00edvel"
+        "madeira": "Carvalho",
+        "nucleo": "Fibra de Cora\u00e7\u00e3o de Drag\u00e3o",
+        "flex": "Vibrante"
     },
     "maestria": {
-        "incendio": 108,
-        "protego": 42,
-        "sectumsempra": 11,
-        "expelliarmus": 65,
-        "avada kedavra": 61,
-        "stupefy": 62
-    },
-    "jojo_desbloqueado": true,
-    "modo_crianca": false,
-    "modo_critico": true
+        "incendio": 0,
+        "protego": 0,
+        "sectumsempra": 0,
+        "expelliarmus": 0,
+        "avada kedavra": 0
+    }
 }
