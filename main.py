@@ -6,6 +6,8 @@ import socket
 import random
 import subprocess
 import time
+import cv2
+import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
 
@@ -100,7 +102,11 @@ class Jogo:
         self.tela_creditos = TelaCreditos(self)
 
         self.rodando = True
-        self.estado = INTRO
+        self.estado = ABERTURA
+        self.caminho_video = "data/video/abertura.mp4"
+        self.caminho_audio_video = "data/video/abertura.mp3" # Se tiver som separado
+        self.video_cap = None
+        self.video_iniciado = False
         self.modo_jogo = 1 
         self.aviso_temp = ""
         self.timer_aviso = 0
@@ -120,6 +126,55 @@ class Jogo:
                 self.reconhecedor = sr.Recognizer(); self.microfone = sr.Microphone()
                 threading.Thread(target=self.ouvir_voz, daemon=True).start()
             except: self.usar_voz = False
+
+    def finalizar_abertura(self):
+        """Encerra o vídeo, libera memória e vai para o Menu."""
+        if self.video_cap:
+            self.video_cap.release()
+            self.video_cap = None
+        self.video_iniciado = False
+        # Para a música da abertura se estiver tocando
+        if self.caminho_audio_video and os.path.exists(self.caminho_audio_video):
+            pygame.mixer.music.stop()
+        
+        self.mudar_estado(MENU)
+
+    def atualizar_video_abertura(self):
+        """Lê o próximo frame do vídeo e desenha na tela."""
+        if not self.video_iniciado:
+            if os.path.exists(self.caminho_video):
+                self.video_cap = cv2.VideoCapture(self.caminho_video)
+                self.video_iniciado = True
+                
+                # Tocar o áudio do vídeo (separado), se existir
+                if self.caminho_audio_video and os.path.exists(self.caminho_audio_video):
+                    pygame.mixer.music.load(self.caminho_audio_video)
+                    pygame.mixer.music.play()
+            else:
+                # Se não achar o vídeo, pula direto
+                print(f"Vídeo não encontrado: {self.caminho_video}")
+                self.finalizar_abertura()
+                return
+
+        if self.video_cap:
+            ret, frame = self.video_cap.read()
+            if not ret:
+                # Fim do vídeo
+                self.finalizar_abertura()
+            else:
+                # 1. Redimensionar para o tamanho da tela
+                frame = cv2.resize(frame, (LARGURA, ALTURA))
+                # 2. Converter BGR (OpenCV) para RGB (Pygame)
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                # 3. Corrigir orientação (OpenCV e Pygame usam eixos diferentes para arrays)
+                frame = np.rot90(frame)
+                frame = np.flipud(frame)
+                # 4. Criar Surface e desenhar
+                surf = pygame.surfarray.make_surface(frame)
+                self.tela.blit(surf, (0, 0))
+                
+                # Opcional: Controlar FPS do vídeo (ex: 30fps)
+                # self.relogio.tick(30)
 
     def tocar_musica(self, caminho):
         if self.musica_atual == caminho: return 
@@ -355,6 +410,20 @@ class Jogo:
             mx, my = pygame.mouse.get_pos()
             
             for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    # Se estiver na abertura e apertar qualquer tecla, pula
+                    if self.estado == ABERTURA:
+                        self.finalizar_abertura()
+                    
+                    if event.key == pygame.K_ESCAPE:
+                        if self.estado == ABERTURA: self.finalizar_abertura() # Garante o escape
+                        elif self.estado in [JOGO, GRIMORIO, CONFIG, PERFIL, DESAFIOS, CREDITOS]: self.mudar_estado(MENU)
+                
+                # Pular com clique do mouse também
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.estado == ABERTURA:
+                        self.finalizar_abertura()
+                    elif self.estado == INTRO: self.mudar_estado(MENU)
                 if event.type == pygame.QUIT: self.rodando = False
                 if self.estado == GRIMORIO: self.grimorio.processar_eventos(event)
                 if self.estado == PERFIL: self.perfil_jogador.processar_eventos(event)
@@ -445,6 +514,8 @@ class Jogo:
                         if self.estado in [JOGO, GRIMORIO, CONFIG, PERFIL, DESAFIOS, CREDITOS]: self.mudar_estado(MENU)
 
             self.tela.fill(PRETO)
+            if self.estado == ABERTURA:
+                self.atualizar_video_abertura()
             if self.estado == INTRO: self.tela.blit(self.bg_intro, (0,0))
             elif self.estado == MENU:
                 self.tela.blit(self.bg_menu, (0,0))
