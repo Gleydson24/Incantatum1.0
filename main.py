@@ -235,22 +235,23 @@ class Jogo:
         
         if modo == 1: # ARCADE
             pasta_oponente = self.oponentes_arcade[self.indice_arcade]
-            # Extrai nome da pasta (ex: "data/Goose" -> "Goose")
             nome_p2 = os.path.basename(pasta_oponente)
-            
-            # Dificuldade aumenta conforme avança
             dificuldade = 1.0 + (self.indice_arcade * 0.5) 
             
         elif modo == 3: # RANKED
             nome_p2 = "Guardião (Ranked)"
-            pasta_oponente = "data/P5" # Ranked sempre difícil
+            pasta_oponente = "data/P5"
             dificuldade = 2.0
         else: # P2
             nome_p2 = "Player 2"
-        # ------------------------------------
         
-        self.player = Mago(200, CHAO_Y, "Harry", self, ctrl_p1, "data/P1", True, True)
-        # Cria inimigo com a pasta e dificuldade calculada
+        # --- LÓGICA DO MODO GIZ DE CERA (P1) ---
+        pasta_p1 = "data/P1"
+        if self.dados_globais.get("modo_crianca", False):
+            pasta_p1 = "data/P1_Kid" # Carrega o desenho
+        # ---------------------------------------
+        
+        self.player = Mago(200, CHAO_Y, "Harry", self, ctrl_p1, pasta_p1, True, True)
         self.inimigo = Mago(LARGURA - 200, CHAO_Y, nome_p2, self, ctrl_p2, pasta_oponente, is_p2_human, False, dificuldade)
         
         self.player.magias_player = self.magias_player; self.player.magias_inimigo = self.magias_inimigo
