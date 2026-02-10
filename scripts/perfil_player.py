@@ -423,11 +423,21 @@ class PerfilJogador:
                         if k not in self.chat_session_logs: self.chat_session_logs[k] = []
                         self.chat_session_logs[k].append({"sender": "me", "text": self.input_chat})
                         
+                        # --- EASTER EGG JOJO ---
                         if self.modo_chat == "ia" and "joaildo" in self.input_chat.lower():
                             if not dados.get("jojo_desbloqueado"):
                                 dados["jojo_desbloqueado"] = True; salvar_dados(dados)
                                 self.personagens_ia.append({"nome": "Jojo", "cor": (100, 100, 100)})
                                 self.chat_session_logs[k].append({"sender": "them", "text": "👀 Uma presença estranha se aproxima..."})
+
+                        # --- EASTER EGG: MODO GIZ DE CERA ---
+                        if self.modo_chat == "ia" and "desenho" in self.input_chat.lower():
+                            estado_atual = dados.get("modo_crianca", False)
+                            dados["modo_crianca"] = not estado_atual # Inverte
+                            salvar_dados(dados)
+                            status = "ATIVADO" if dados["modo_crianca"] else "DESATIVADO"
+                            self.chat_session_logs[k].append({"sender": "them", "text": f"🎨 A realidade mudou! Modo Giz de Cera: {status}"})
+                        # ------------------------------------
 
                         if self.modo_chat == "ia": self.chat_ai_service.enviar_mensagem(name, self.chat_session_logs[k])
                         self.input_chat = ""
