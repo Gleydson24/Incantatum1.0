@@ -11,43 +11,43 @@
     "nivel_jogador": 2,
     "xp_atual": 220,
     "xp_proximo_nivel": 1200,
-    "data_ultima_missao": "2026-02-06",
+    "data_ultima_missao": "2026-02-10",
     "missoes_diarias": [
         {
-            "id": "daily_2026-02-06_0",
-            "titulo": "Treino Constante",
-            "desc": "Jogue 5 partidas completas.",
-            "meta": 5,
-            "xp": 500,
-            "valor_inicial": 0,
-            "tipo_dado": "partidas_totais",
-            "chave_maestria": null,
-            "resgatado": true,
-            "data": "2026-02-06"
-        },
-        {
-            "id": "daily_2026-02-06_1",
-            "titulo": "Defesa Impenetr\u00e1vel",
-            "desc": "Use Protego 11 vezes.",
-            "meta": 11,
-            "xp": 440,
-            "valor_inicial": 0,
-            "tipo_dado": "protego",
-            "chave_maestria": "protego",
-            "resgatado": true,
-            "data": "2026-02-06"
-        },
-        {
-            "id": "daily_2026-02-06_2",
+            "id": "daily_2026-02-10_0",
             "titulo": "Desarme T\u00e1tico",
-            "desc": "Use Expelliarmus 8 vezes.",
-            "meta": 8,
-            "xp": 280,
-            "valor_inicial": 0,
+            "desc": "Use Expelliarmus 13 vezes.",
+            "meta": 13,
+            "xp": 455,
+            "valor_inicial": 65,
             "tipo_dado": "expelliarmus",
             "chave_maestria": "expelliarmus",
-            "resgatado": true,
-            "data": "2026-02-06"
+            "resgatado": false,
+            "data": "2026-02-10"
+        },
+        {
+            "id": "daily_2026-02-10_1",
+            "titulo": "Treino Constante",
+            "desc": "Jogue 3 partidas completas.",
+            "meta": 3,
+            "xp": 300,
+            "valor_inicial": 56,
+            "tipo_dado": "partidas_totais",
+            "chave_maestria": null,
+            "resgatado": false,
+            "data": "2026-02-10"
+        },
+        {
+            "id": "daily_2026-02-10_2",
+            "titulo": "Defesa Impenetr\u00e1vel",
+            "desc": "Use Protego 7 vezes.",
+            "meta": 7,
+            "xp": 280,
+            "valor_inicial": 42,
+            "tipo_dado": "protego",
+            "chave_maestria": "protego",
+            "resgatado": false,
+            "data": "2026-02-10"
         }
     ],
     "historico_conquistas": [
@@ -81,5 +81,7 @@
         "avada kedavra": 61,
         "stupefy": 62
     },
-    "jojo_desbloqueado": true
+    "jojo_desbloqueado": true,
+    "modo_crianca": false,
+    "modo_critico": true
 }
