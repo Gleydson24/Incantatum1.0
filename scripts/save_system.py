@@ -13,7 +13,6 @@ FLEXIBILIDADE = ["Rígida", "Flexível", "Vibrante", "Quebradiça"]
 def carregar_dados():
     hoje_str = str(datetime.date.today())
 
-    # Gera varinha aleatória padrão caso não exista
     varinha_padrao = {
         "madeira": random.choice(MADEIRAS),
         "nucleo": random.choice(NUCLEOS),
@@ -23,7 +22,7 @@ def carregar_dados():
     dados_padrao = {
         "nome_jogador": f"Guest-{random.randint(1000, 9999)}",
         "nome_alterado": False,
-        "titulo_jogador": "Bruxo Iniciante", # Adicionado para sincronizar
+        "titulo_jogador": "Bruxo Iniciante",
         "avatar_id": 0,
         "avatar_path": "",
         "partidas_totais": 0,
@@ -38,7 +37,14 @@ def carregar_dados():
         "historico_conquistas": [],
         "chat_logs": {},
         
-        "varinha": varinha_padrao, # NOVO
+        "jojo_desbloqueado": False,
+        
+        # --- NOVOS EASTER EGGS ---
+        "modo_crianca": False, # Muda o sprite do P1
+        "modo_critico": False, # Muda os textos do Grimório
+        # -------------------------
+        
+        "varinha": varinha_padrao,
         "maestria": {
             "incendio": 0, "protego": 0, "sectumsempra": 0, 
             "expelliarmus": 0, "avada kedavra": 0
@@ -54,7 +60,6 @@ def carregar_dados():
             dados = json.load(f)
             for k, v in dados_padrao.items():
                 if k not in dados: dados[k] = v
-            # Garante que varinha existe em saves antigos
             if "varinha" not in dados: dados["varinha"] = varinha_padrao
             return dados
     except Exception as e:
