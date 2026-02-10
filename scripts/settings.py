@@ -58,6 +58,7 @@ DESAFIOS = 113
 CREDITOS = 114 
 PROCURANDO = 115
 CUTSCENE_BOSS = 116
+ABERTURA = 117
 
 FEITICOS = {
     "incendio": {
@@ -153,4 +154,5 @@ CONTROLES_P2_PVP = {
     "sectumsempra": pygame.K_KP5, 
     "avada": pygame.K_KP0,
     "disputa": pygame.K_KP_ENTER
+
 }
