@@ -84,9 +84,11 @@ class PerfilJogador:
         # --- CONTA / RANK (Posições Ajustadas) ---
         self.input_user = ""; self.input_pass = ""; self.foco_input = None
         self.msg_erro_login = ""
-        # Botões reposicionados para baixo (y + 350) e alargados (170px)
-        self.btn_login = Botao(self.x + 300, self.y + 350, 170, 45, "ENTRAR", cor_fundo=(0, 100, 0))
-        self.btn_registrar = Botao(self.x + 500, self.y + 350, 170, 45, "CADASTRAR", cor_fundo=(0, 0, 100))
+        
+        # CORREÇÃO: Mudei de self.y + 350 para self.y + 450 para não ficar em cima da senha
+        self.btn_login = Botao(self.x + 300, self.y + 450, 170, 45, "ENTRAR", cor_fundo=(0, 100, 0))
+        self.btn_registrar = Botao(self.x + 500, self.y + 450, 170, 45, "CADASTRAR", cor_fundo=(0, 0, 100))
+        
         self.btn_refresh = Botao(self.x + 750, self.y + 230, 100, 30, "Atualizar", cor_fundo=(50,50,50), tamanho_fonte=14)
         self.btn_add_friend = []
 
