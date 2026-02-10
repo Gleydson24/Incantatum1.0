@@ -3,7 +3,7 @@ import threading
 
 # --- CONFIGURAÇÃO ---
 # COLE SUA CHAVE AQUI
-API_KEY = "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" 
+API_KEY = "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" 
 
 MODELO_USAR = "llama-3.3-70b-versatile"
 
@@ -91,4 +91,5 @@ class ChatIA:
             r = self.resposta_pendente
             self.resposta_pendente = None
             return r
+
         return None
