@@ -153,14 +153,38 @@ class Jogo:
         if fallback_func: return fallback_func()
         s = pygame.Surface((LARGURA, ALTURA)); s.fill(fallback_cor if fallback_cor else (0,0,0))
         return s
+# Dentro de main.py:
 
     def criar_botoes_menu(self):
-        self.botoes_menu = { "jogar": Botao(119, 100, 205, 50, "", None), "treino": Botao(114, 164, 269, 50, "", None), "perfil": Botao(109, 233, 247, 50, "", None), "grimorio": Botao(104, 301, 240, 50, "", None), "desafios": Botao(104, 367, 239, 50, "", None), "config": Botao(103, 434, 307, 50, "", None), "creditos": Botao(104, 501, 238, 50, "", None), "sair": Botao(105, 574, 244, 50, "", None) }
+        # Usamos cor_fundo=None para deixar invisível
+        self.botoes_menu = {
+            "jogar": Botao(98, 139, 214, 51, texto="", cor_fundo=None), 
+            "treino": Botao(98, 192, 280, 53, texto="", cor_fundo=None),
+            "perfil": Botao(97, 248, 227, 56, texto="", cor_fundo=None),
+            "grimorio": Botao(97, 305, 258, 57, texto="", cor_fundo=None),
+            "desafios": Botao(96, 363, 235, 59, texto="", cor_fundo=None),
+            "config": Botao(99, 424, 320, 52, texto="", cor_fundo=None),
+            "creditos": Botao(96, 480, 244, 56, texto="", cor_fundo=None),
+            "sair": Botao(97, 538, 223, 53, texto="", cor_fundo=None) 
+        }
+        
         cx, cy = LARGURA // 2, ALTURA // 2
-        self.botoes_modos = { "ia": Botao(cx-150, cy-80, 300, 55, "MODO ARCADE (IA)", (50,50,80)), "p2": Botao(cx-150, cy-10, 300, 55, "CONTRA P2", (50,50,80)), "rank": Botao(cx-150, cy+60, 300, 55, "RANKEADA", (50,50,80)), "voltar": Botao(cx-150, cy+150, 300, 55, "VOLTAR", (80,20,20)) }
-        self.botoes_vitoria = {"continuar": Botao(386, 640, 225, 60, "", None), "menu": Botao(659, 638, 221, 60, "", None)}
-        self.botoes_derrota = {"revanche": Botao(391, 635, 224, 60, "", None), "menu": Botao(659, 635, 222, 60, "", None)}
-
+        # Estes continuam com cor pois são submenus
+        self.botoes_modos = {
+            "ia": Botao(cx - 150, cy - 80, 300, 55, "MODO ARCADE (IA)", (50, 50, 80)),
+            "p2": Botao(cx - 150, cy - 10, 300, 55, "CONTRA P2", (50, 50, 80)),
+            "rank": Botao(cx - 150, cy + 60, 300, 55, "RANKEADA", (50, 50, 80)),
+            "voltar": Botao(cx - 150, cy + 150, 300, 55, "VOLTAR", (80, 20, 20))
+        }
+        
+        self.botoes_vitoria = {
+            "continuar": Botao(386, 640, 225, 60, texto="", cor_fundo=None), 
+            "menu": Botao(659, 638, 221, 60, texto="", cor_fundo=None)
+        }
+        self.botoes_derrota = {
+            "revanche": Botao(391, 635, 224, 60, texto="", cor_fundo=None), 
+            "menu": Botao(659, 635, 222, 60, texto="", cor_fundo=None)
+        }
     def criar_elementos_config(self):
         cx, cy = LARGURA // 2, ALTURA // 2
         self.rect_painel_config = pygame.Rect(cx - 300, cy - 250, 600, 500)
@@ -211,22 +235,23 @@ class Jogo:
         
         if modo == 1: # ARCADE
             pasta_oponente = self.oponentes_arcade[self.indice_arcade]
-            # Extrai nome da pasta (ex: "data/Goose" -> "Goose")
             nome_p2 = os.path.basename(pasta_oponente)
-            
-            # Dificuldade aumenta conforme avança
             dificuldade = 1.0 + (self.indice_arcade * 0.5) 
             
         elif modo == 3: # RANKED
             nome_p2 = "Guardião (Ranked)"
-            pasta_oponente = "data/P5" # Ranked sempre difícil
+            pasta_oponente = "data/P5"
             dificuldade = 2.0
         else: # P2
             nome_p2 = "Player 2"
-        # ------------------------------------
         
-        self.player = Mago(200, CHAO_Y, "Harry", self, ctrl_p1, "data/P1", True, True)
-        # Cria inimigo com a pasta e dificuldade calculada
+        # --- LÓGICA DO MODO GIZ DE CERA (P1) ---
+        pasta_p1 = "data/P1"
+        if self.dados_globais.get("modo_crianca", False):
+            pasta_p1 = "data/P1_Kid" # Carrega o desenho
+        # ---------------------------------------
+        
+        self.player = Mago(200, CHAO_Y, "Harry", self, ctrl_p1, pasta_p1, True, True)
         self.inimigo = Mago(LARGURA - 200, CHAO_Y, nome_p2, self, ctrl_p2, pasta_oponente, is_p2_human, False, dificuldade)
         
         self.player.magias_player = self.magias_player; self.player.magias_inimigo = self.magias_inimigo

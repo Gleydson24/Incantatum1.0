@@ -12,8 +12,8 @@ class LivroRegras:
         self.fonte_tit = pygame.font.SysFont("Garamond", 40, bold=True)
         
         self.paginas = [
-            ("BÁSICO", ["Use W/A/S/D para mover.", "SHIFT para Dash (Esquiva).", "Use g,h,j,k,l,b para lançar feitiços.", "Gerencie sua MANA (Barra Azul)."]),
-            ("FEITIÇOS", ["g: Incendio (Fogo)", "h: Protego (Escudo)", "j: Expelliarmus (Empurrão)", "b: Avada Kedavra (Fatal)"]),
+            ("BÁSICO", ["Use W/A/S/D para mover.", "SHIFT para Dash (Esquiva).", "Use 1-5 para lançar feitiços.", "Gerencie sua MANA (Barra Azul)."]),
+            ("FEITIÇOS", ["1: Incendio (Fogo)", "2: Protego (Escudo)", "3: Expelliarmus (Empurrão)", "X: Avada Kedavra (Fatal)"]),
             ("DISPUTA (CLASH)", ["Se duas magias colidirem,", "esmague ESPAÇO rapidamente", "para vencer o empurrão!"]),
             ("MODOS EXTRAS", ["Mobile: Conecte pelo IP no Config.", "Voz: Fale o nome do feitiço.", "Varinha: Use algo colorido na Câmera."])
         ]

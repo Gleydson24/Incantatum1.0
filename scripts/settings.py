@@ -118,28 +118,27 @@ CONTROLES_SOLO = {
     "esquerda": pygame.K_a,     # WASD padrão para facilitar
     "direita": pygame.K_d,
     "dash": pygame.K_LSHIFT,
-    "incendio": pygame.K_g,
-    "protego": pygame.K_h,
-    "expelliarmus": pygame.K_j,
-    "stupefy": pygame.K_k,
-    "sectumsempra": pygame.K_l,
-    "avada": pygame.K_b,
+    "incendio": pygame.K_1,
+    "protego": pygame.K_2,
+    "expelliarmus": pygame.K_3,
+    "stupefy": pygame.K_4,
+    "sectumsempra": pygame.K_5,
+    "avada": pygame.K_x,
     "disputa": pygame.K_SPACE
 }
 
 # 2. CONTROLES PVP - PLAYER 1 (Esquerda do Teclado)
 CONTROLES_P1_PVP = {
-    "esquerda": pygame.K_a,     # WASD padrão para facilitar
+    "esquerda": pygame.K_a,
     "direita": pygame.K_d,
     "dash": pygame.K_LSHIFT,
-    "incendio": pygame.K_g,
-    "protego": pygame.K_h,
-    "expelliarmus": pygame.K_j,
-    "stupefy": pygame.K_k,
-    "sectumsempra": pygame.K_l,
-    "avada": pygame.K_b,
+    "incendio": pygame.K_1,
+    "protego": pygame.K_2,
+    "expelliarmus": pygame.K_3,
+    "stupefy": pygame.K_4,
+    "sectumsempra": pygame.K_5,
+    "avada": pygame.K_x,
     "disputa": pygame.K_SPACE
-
 }
 
 # 3. CONTROLES PVP - PLAYER 2 (Direita do Teclado/Setas/Numpad)
